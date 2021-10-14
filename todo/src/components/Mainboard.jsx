@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import ToDoList from "./ToDoList";
 
-export default class Mainboard extends Component {
+class Mainboard extends Component {
   render() {
     return (
       <main className="mainboard">
@@ -22,7 +23,9 @@ export default class Mainboard extends Component {
             <span className="caption">Complete checked</span>
           </div>
         </div>
-        <div className="todo" id="todo__list" />
+
+        <ToDoList />
+
         <div className="mainboard__footer" id="todo__footer">
           <div className="toolbar__item" id="todo__item-add">
             <i className="fas fa-plus" />
@@ -32,3 +35,5 @@ export default class Mainboard extends Component {
     );
   }
 }
+
+export default Mainboard;
