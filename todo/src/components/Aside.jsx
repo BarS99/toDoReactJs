@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import person from "../static/images/john-smith.jpg";
 
