@@ -11,7 +11,8 @@ class ToDoList extends Component {
               key={item.id}
               item={item}
               dataIndex={index}
-              removeItem={this.props.removeItem}
+              itemRemove={this.props.itemRemove}
+              itemToggleCheck={this.props.itemToggleCheck}
             />
           );
         })}

@@ -2,16 +2,25 @@ import React from "react";
 
 const TodoItem = (props) => {
   return (
-    <div className="todo__item">
+    <div
+      className={`todo__item${
+        props.item.checked ? " todo__item--checked" : ""
+      }`}
+    >
       <div className="todo__item-content">
-        <div className="todo__item-check"></div>
+        <div
+          className="todo__item-check"
+          onClick={() => {
+            props.itemToggleCheck(props.dataIndex);
+          }}
+        ></div>
         <div className="todo__item-text">{props.item.text}</div>
       </div>
       <div className="todo__item-actions">
         <div
           className="todo__item-btn todo__item-remove"
           onClick={() => {
-            props.removeItem(props.dataIndex);
+            props.itemRemove(props.dataIndex);
           }}
         >
           <i className="fas fa-trash"></i>
