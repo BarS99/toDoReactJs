@@ -3,7 +3,7 @@ import { bindToggleClass } from "../static/scripts/utilities";
 
 import person from "../static/images/john-smith.jpg";
 
-const Aside = () => {
+const Aside = (props) => {
   return (
     <aside className="layout-grid__col layout-grid__aside">
       <div
@@ -21,15 +21,27 @@ const Aside = () => {
         <figcaption className="user-profile__caption">John Smith</figcaption>
       </figure>
       <nav className="nav-actions">
-        <div className="nav-actions__item" id="todo__print">
+        <div
+          className="nav-actions__item"
+          id="todo__print"
+          onClick={props.printList}
+        >
           <i className="fas fa-print" />
           <span>Print</span>
         </div>
-        <div className="nav-actions__item" id="todo__export">
+        <div
+          className="nav-actions__item"
+          id="todo__export"
+          onClick={props.exportList}
+        >
           <i className="fas fa-file-export" />
           <span>Export as JSON</span>
         </div>
-        <div className="nav-actions__item" id="todo__import">
+        <div
+          className="nav-actions__item"
+          id="todo__import"
+          onClick={props.importList}
+        >
           <i className="fas fa-file-import" />
           <span>Import as JSON</span>
         </div>
