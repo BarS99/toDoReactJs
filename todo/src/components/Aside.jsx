@@ -1,11 +1,17 @@
 import React from "react";
+import { bindToggleClass } from "../static/scripts/utilities";
 
 import person from "../static/images/john-smith.jpg";
 
 const Aside = () => {
   return (
     <aside className="layout-grid__col layout-grid__aside">
-      <div className="layout-grid__toggle">
+      <div
+        className="layout-grid__toggle"
+        onClick={() => {
+          bindToggleClass("#layout-grid", "layout-grid--show-aside");
+        }}
+      >
         <i className="fas fa-arrow-left" />
       </div>
       <figure className="user-profile">

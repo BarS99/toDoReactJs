@@ -1,33 +1,53 @@
 import React, { Component } from "react";
 import ToDoList from "./ToDoList";
+import { swap } from "../static/scripts/utilities";
+import toDoStorage from "../static/scripts/toDoStorage";
 
 class Mainboard extends Component {
-  state = {
-    itemsIdCounter: 2,
-    items: [
-      { id: 0, text: "Eat breakfast at 7:00 am", checked: false },
-      { id: 1, text: "Go to work at 7:30 am", checked: false },
-      { id: 2, text: "Work between 8:00 and 4:00 pm", checked: false },
-    ],
-  };
+  constructor() {
+    super();
+
+    this.storage = new toDoStorage();
+
+    this.state = {
+      items: this.storage.localStorage.tasks,
+      itemsIdCounter: this.storage.localStorage.itemsIdCounter,
+    };
+  }
 
   render() {
     return (
       <main className="mainboard">
         <div className="toolbar" id="todo__toolbar">
-          <div className="toolbar__item" id="todo__check-all">
+          <div
+            className="toolbar__item"
+            id="todo__check-all"
+            onClick={this.itemCheckAll}
+          >
             <i className="fas fa-check-square" />
             <span className="caption">Check all</span>
           </div>
-          <div className="toolbar__item" id="todo__uncheck-all">
+          <div
+            className="toolbar__item"
+            id="todo__uncheck-all"
+            onClick={this.itemUncheckAll}
+          >
             <i className="far fa-square" />
             <span className="caption">Uncheck all</span>
           </div>
-          <div className="toolbar__item" id="todo__remove-all">
+          <div
+            className="toolbar__item"
+            id="todo__remove-all"
+            onClick={this.itemRemoveChecked}
+          >
             <i className="fas fa-trash" />
             <span className="caption">Remove checked</span>
           </div>
-          <div className="toolbar__item" id="todo__complete-all">
+          <div
+            className="toolbar__item"
+            id="todo__complete-all"
+            onClick={this.itemCompleteChecked}
+          >
             <i className="fas fa-check" />
             <span className="caption">Complete checked</span>
           </div>
@@ -36,7 +56,10 @@ class Mainboard extends Component {
         <ToDoList
           items={this.state.items}
           itemRemove={this.itemRemove}
+          itemComplete={this.itemComplete}
           itemToggleCheck={this.itemToggleCheck}
+          itemMoveDown={this.itemMoveDown}
+          itemMoveUp={this.itemMoveUp}
         />
 
         <div className="mainboard__footer" id="todo__footer">
@@ -66,16 +89,78 @@ class Mainboard extends Component {
     newItem.text = newItemText;
     newItem.id = this.state.itemsIdCounter + 1;
 
-    this.setState({
-      items: [...this.state.items, newItem],
-      itemsIdCounter: this.state.itemsIdCounter + 1,
-    });
+    this.setState(
+      {
+        items: [...this.state.items, newItem],
+        itemsIdCounter: this.state.itemsIdCounter + 1,
+      },
+      () => {
+        this.storage.localStorage.tasks = this.state.items;
+        this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+        this.storage.updateToDoStorage(this.storage.localStorage);
+      }
+    );
   };
 
   itemRemove = (index) => {
-    this.state.items.splice(index, 1);
+    const removedItems = this.state.items.splice(index, 1);
 
-    this.setState({ items: this.state.items });
+    this.setState({ items: this.state.items }, () => {
+      this.storage.localStorage.tasks = this.state.items;
+      this.storage.localStorage.tasksRemoved = [
+        ...removedItems,
+        ...this.storage.localStorage.tasksRemoved,
+      ];
+      this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+      this.storage.updateToDoStorage(this.storage.localStorage);
+    });
+  };
+
+  itemComplete = (index) => {
+    const completedItems = this.state.items.splice(index, 1);
+
+    this.setState({ items: this.state.items }, () => {
+      this.storage.localStorage.tasks = this.state.items;
+      this.storage.localStorage.tasksCompleted = [
+        ...completedItems,
+        ...this.storage.localStorage.tasksCompleted,
+      ];
+      this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+      this.storage.updateToDoStorage(this.storage.localStorage);
+    });
+  };
+
+  itemMoveUp = (index) => {
+    if (index === 0) return;
+
+    let items = this.state.items;
+
+    swap(items, index, index - 1);
+
+    this.setState({ items: this.state.items }, () => {
+      this.storage.localStorage.tasks = this.state.items;
+      this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+      this.storage.updateToDoStorage(this.storage.localStorage);
+    });
+  };
+
+  itemMoveDown = (index) => {
+    let items = this.state.items;
+
+    if (index === items.length - 1) return;
+
+    swap(items, index, index + 1);
+
+    this.setState({ items: this.state.items }, () => {
+      this.storage.localStorage.tasks = this.state.items;
+      this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+      this.storage.updateToDoStorage(this.storage.localStorage);
+    });
   };
 
   itemToggleCheck = (index) => {
@@ -84,6 +169,72 @@ class Mainboard extends Component {
     items[index].checked = !items[index].checked;
 
     this.setState({ items: items });
+  };
+
+  itemCheckAll = () => {
+    let items = this.state.items;
+
+    items.forEach((item) => {
+      item.checked = true;
+    });
+
+    this.setState({ items: items });
+  };
+
+  itemUncheckAll = () => {
+    let items = this.state.items;
+
+    items.forEach((item) => {
+      item.checked = false;
+    });
+
+    this.setState({ items: items });
+  };
+
+  itemRemoveChecked = () => {
+    let items = this.state.items;
+
+    const removedItems = items.filter((item) => {
+      return item.checked;
+    });
+
+    items = items.filter((item) => {
+      return !item.checked;
+    });
+
+    this.setState({ items: items }, () => {
+      this.storage.localStorage.tasks = this.state.items;
+      this.storage.localStorage.tasksRemoved = [
+        ...removedItems,
+        ...this.storage.localStorage.tasksRemoved,
+      ];
+      this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+      this.storage.updateToDoStorage(this.storage.localStorage);
+    });
+  };
+
+  itemCompleteChecked = () => {
+    let items = this.state.items;
+
+    const completedItems = items.filter((item) => {
+      return item.checked;
+    });
+
+    items = items.filter((item) => {
+      return !item.checked;
+    });
+
+    this.setState({ items: items }, () => {
+      this.storage.localStorage.tasks = this.state.items;
+      this.storage.localStorage.tasksCompleted = [
+        ...completedItems,
+        ...this.storage.localStorage.tasksCompleted,
+      ];
+      this.storage.localStorage.itemsIdCounter = this.state.itemsIdCounter;
+
+      this.storage.updateToDoStorage(this.storage.localStorage);
+    });
   };
 }
 

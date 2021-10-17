@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import toDoStorage from "../static/scripts/toDoStorage";
 
 class Navtabs extends Component {
   render() {
@@ -24,5 +25,7 @@ class Navtabs extends Component {
     );
   }
 }
+
+window.addEventListener("DOMContentLoaded", () => {});
 
 export default Navtabs;

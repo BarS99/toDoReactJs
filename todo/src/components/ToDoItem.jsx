@@ -25,13 +25,28 @@ const TodoItem = (props) => {
         >
           <i className="fas fa-trash"></i>
         </div>
-        <div className="todo__item-btn todo__item-complete">
+        <div
+          className="todo__item-btn todo__item-complete"
+          onClick={() => {
+            props.itemComplete(props.dataIndex);
+          }}
+        >
           <i className="fas fa-check"></i>
         </div>
-        <div className="todo__item-btn todo__item-move-down">
+        <div
+          className="todo__item-btn todo__item-move-down"
+          onClick={() => {
+            props.itemMoveDown(props.dataIndex);
+          }}
+        >
           <i className="fas fa-arrow-down"></i>
         </div>
-        <div className="todo__item-btn todo__item-move-up">
+        <div
+          className="todo__item-btn todo__item-move-up"
+          onClick={() => {
+            props.itemMoveUp(props.dataIndex);
+          }}
+        >
           <i className="fas fa-arrow-up"></i>
         </div>
       </div>

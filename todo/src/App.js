@@ -3,6 +3,7 @@ import "./static/stylesheets/styles.css";
 
 import Aside from "./components/Aside";
 import Main from "./components/Main";
+import toDoStorage from "./static/scripts/toDoStorage";
 
 function App() {
   return (
@@ -12,5 +13,9 @@ function App() {
     </div>
   );
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  toDoStorage.initToDoStorage();
+});
 
 export default App;

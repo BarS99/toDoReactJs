@@ -12,7 +12,10 @@ class ToDoList extends Component {
               item={item}
               dataIndex={index}
               itemRemove={this.props.itemRemove}
+              itemComplete={this.props.itemComplete}
               itemToggleCheck={this.props.itemToggleCheck}
+              itemMoveDown={this.props.itemMoveDown}
+              itemMoveUp={this.props.itemMoveUp}
             />
           );
         })}
