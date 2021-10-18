@@ -28,7 +28,7 @@ class ToDoList extends Component {
         );
       });
     } else {
-      return <div className="message">Lista jest pusta!</div>;
+      return <div className="message">The list is empty!</div>;
     }
   };
 }
